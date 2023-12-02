@@ -1,0 +1,8 @@
+there will be times when you will need to share your data and state between screens across your whole application. That is when you will need an excellent state management library to help you build applications fast and efficiently.
+
+
+following packages used:
+1) get
+2) get_storage
+
+After adding the dependencies, the first thing you need to do is change the MaterialApp widget to GetMaterialApp in your main.dart
