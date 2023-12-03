@@ -13,14 +13,17 @@ class StoreController extends GetxController {
   final followerListEditingController = TextEditingController();
   final reviewsEditingController = TextEditingController();
 
+  // function ot update Store name
   updateStoreName({required String name}) {
     storeName.value = name;
-  }
+  } 
 
+  // function to increase followers count
   increaseFollowersCount() {
     followersCount.value = followersCount.value + 1;
   }
 
+  // function to decrease followers count
   decreaseFollowersCount() {
     if (followersCount.value <= 0) {
       Get.snackbar(
@@ -29,15 +32,30 @@ class StoreController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 1),
       );
-    } else
+    } else {
       followersCount.value = followersCount.value - 1;
+    }
   }
 
-  storeStatusOpen() {
-    storeStatus.value = true;
-  }
-
-  UpdateStoreStatus() {
+  // function to update store status
+  updateStoreStatus() {
     storeStatus.value = !(storeStatus.value == true);
   }
+
+  // function to add follower
+  addFollower({required String followerName}) {
+    String refinedFollowerName = followerName.trim();
+    if (refinedFollowerName == "") {
+      Get.snackbar(
+        "Follower Name can't be empty",
+        "Not Possible",
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 1),
+      );
+    } else {
+      followerList.add(refinedFollowerName);
+    }
+  }
+
+  
 }

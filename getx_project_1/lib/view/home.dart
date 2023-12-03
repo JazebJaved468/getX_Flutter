@@ -1,9 +1,10 @@
-import 'dart:html';
+// import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getx_project_1/controller/storeController.dart';
-import 'package:getx_project_1/bindings/storeContoller.dart';
+import 'package:getx_project_1/view/changeName.dart';
+// import 'package:getx_project_1/bindings/storeContoller.dart';
 
 class MyHomePage extends GetView<StoreController> {
   MyHomePage({super.key});
@@ -12,117 +13,137 @@ class MyHomePage extends GetView<StoreController> {
 
   @override
   Widget build(BuildContext context) {
+    // media queries
+    final mediaWidth = MediaQuery.of(context).size.width;
+    // final mediaHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: const Text("GetX Project 1"),
       ),
       body: Center(
-        child: Column(
-          children: [
-            // Display Store Name
-            Obx(() => Text(storeController.storeName.value)),
-
-            // spacing
-            const SizedBox(
-              height: 20,
-            ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+        child: SingleChildScrollView(
+          child: Container(
+            width: mediaWidth * 0.8,
+            color: Colors.grey[300],
+            child: Column(
               children: [
-                // display store status
-                Obx(
-                  () => Text(
-                    storeController.storeStatus.value == true
-                        ? 'Store is Open'
-                        : 'Store is Closed',
+                // Display Store Name
+                Obx(() => Text(storeController.storeName.value)),
+
+                ElevatedButton(
+                    onPressed: () {
+                      Get.to(ChangeName());
+                    },
+                    child: Text("Change Store Name")),
+                // spacing
+                const SizedBox(
+                  height: 20,
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // display store status
+                    Obx(
+                      () => Text(
+                        storeController.storeStatus.value == true
+                            ? 'Store is Open'
+                            : 'Store is Closed',
+                      ),
+                    ),
+
+                    // spacing
+                    const SizedBox(
+                      width: 20,
+                    ),
+
+                    // button to change store status
+                    ElevatedButton(
+                        onPressed: () {
+                          storeController.updateStoreStatus();
+                        },
+                        child: Obx(
+                          () => Text(
+                              '${storeController.storeStatus.value == true ? 'Close ' : 'Open'}'),
+                        )),
+                  ],
+                ),
+
+                // spacing
+                const SizedBox(
+                  height: 50,
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    // Display Followers Count
+                    Obx(
+                      () => Text('${storeController.followersCount.value}'),
+                    ),
+
+                    // decrease followers
+                    ElevatedButton(
+                      onPressed: () {
+                        storeController.decreaseFollowersCount();
+                      },
+                      child: const Text('Decrease Followers'),
+                    ),
+                    // incease followers
+                    ElevatedButton(
+                      onPressed: () {
+                        storeController.increaseFollowersCount();
+                      },
+                      child: const Text('Increase Followers'),
+                    ),
+                  ],
+                ),
+
+                // spacing
+                const SizedBox(
+                  height: 40,
+                ),
+
+                // Text Field for followers
+                TextField(
+                  controller: storeController.followerListEditingController,
+                  decoration: const InputDecoration(
+                    hintText: 'Enter Followers Name',
                   ),
                 ),
 
                 // spacing
                 const SizedBox(
-                  width: 20,
+                  height: 20,
                 ),
 
-                // button to change store status
+                // button to add followers
                 ElevatedButton(
-                    onPressed: () {
-                      storeController.UpdateStoreStatus();
-                    },
-                    child: Obx(
-                      () => Text(
-                          '${storeController.storeStatus.value == true ? 'Close ' : 'Open'}'),
-                    )),
-              ],
-            ),
+                  onPressed: () {
+                    storeController.addFollower(
+                        followerName:
+                            storeController.followerListEditingController.text);
+                  },
+                  child: const Text('Add Followers'),
+                ),
 
-            // Text Field
-            TextField(
-              controller: storeController.storeNameEditingController,
-              decoration: const InputDecoration(
-                hintText: 'Enter Store Name',
-              ),
-            ),
-
-            // spacing
-            const SizedBox(
-              height: 20,
-            ),
-
-            // button to update store name
-            ElevatedButton(
-              onPressed: () {
-                storeController.updateStoreName(
-                  name: storeController.storeNameEditingController.text,
-                );
-
-                //Show SnackBar
-                Get.snackbar(
-                  'Store Name Updated to : ${storeController.storeName.value == '' ? 'no name given' : storeController.storeName.value}',
-                  'Store Name Updated Successfully',
-                  snackPosition: SnackPosition.BOTTOM,
-                  backgroundColor: Colors.green,
-                  colorText: Colors.white,
-                );
-              },
-              child: const Text('Update'),
-            ),
-
-            // spacing
-            const SizedBox(
-              height: 50,
-            ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                // Display Followers Count
+                // display followers
                 Obx(
-                  () => Text('${storeController.followersCount.value}'),
-                ),
-
-                // decrease followers
-                ElevatedButton(
-                  onPressed: () {
-                    storeController.decreaseFollowersCount();
-                  },
-                  child: const Text('Decrease Followers'),
-                ),
-                // incease followers
-                ElevatedButton(
-                  onPressed: () {
-                    storeController.increaseFollowersCount();
-                  },
-                  child: const Text('Increase Followers'),
+                  () => ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: storeController.followerList.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(
+                          storeController.followerList[index],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
-
-            // spacing
-            const SizedBox(
-              height: 20,
-            ),
-          ],
+          ),
         ),
       ),
     );
